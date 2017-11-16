@@ -1,55 +1,74 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include <windows.h>
-#include <windowsx.h>
-#include <stdio.h>
+//#define _CRT_SECURE_NO_WARNINGS
+
+#include <iostream>
 #include <conio.h>
 
-void main()
+#include "file_IO.h"
+#include "window.h"
+#include "Rhombus.h"
+
+void drow()
 {
-	// получаем идентификатор окна
-	HWND hwnd = GetConsoleWindow();
-	// получаем контекст отображения
-	HDC hdc = GetDC(hwnd);
-	RECT rt;
-	char buf[100];
-	// устанавливаем цвет фона
-	SetBkColor(hdc, RGB(0, 0, 0));
-	// устанавливаем цвет текста
+	HDC hdc = window::getContext().getHdc();
+	HWND hwnd = window::getContext().getHwnd();
+	RECT rt = window::getContext().getRt();
+		
+	SetBkColor(hdc, RGB(0, 0, 0));	
 	SetTextColor(hdc, RGB(255, 0, 0));
-	// создаем красное перо
-	HPEN hRedPen = CreatePen(PS_SOLID, 5, RGB(255, 0, 0));
-	// и выбираем его в контекст отображения,
-	// сохраняя предыдущее перо
+	
+	HPEN hRedPen = CreatePen(PS_SOLID, 5, RGB(255, 0, 0));	
 	HPEN hOldPen = SelectPen(hdc, hRedPen);
-	// создаем зеленую кисть
-	HBRUSH hGreenBrush = CreateSolidBrush(RGB(0, 255, 0));
-			// и выбираем ее в контекст отображения,
-		// сохраняя предыдущую кисть
-		HBRUSH hOldBrush = SelectBrush(hdc, hGreenBrush);
-	// выводим строку стандартными средствами
-	printf("Graphics in Console Window.");
-	do {
-		// получаем размер окна
-		GetClientRect(hwnd, &rt);
-		// формируем выводимую строку
-		sprintf(buf, "Размер окна %d на %d пикселей",
-			rt.right, rt.bottom);
-		// выводим строку графическими средствами
-		TextOutA(hdc, 10, 10, buf, strlen(buf));
-		// рисуем закрашенный эллипс
-		Ellipse(hdc, 10, 30, rt.right-10, rt.bottom-10);
-	} while (_getch() != 27); // при нажатии любой клавиши
-							 // (кроме Esc) перерисовываем изображение,
-							 // изображение изменится, если изменились размеры окна,
-							 // нажатие Esc – выход
-							 // выбираем в контекст отображения предыдущее перо
-	SelectPen(hdc, hOldPen);
-	// выбираем в контекст отображения предыдущую кисть
-	SelectBrush(hdc, hOldBrush);
-	// удаляем красное перо
-	DeletePen(hRedPen);
-	// удаляем зеленую кисть
-	DeleteBrush(hGreenBrush);
-	// освобождаем контекст отображения
-	ReleaseDC(hwnd, hdc);
-}
+	
+	HBRUSH hGreenBrush = CreateSolidBrush(RGB(0, 255, 0));	
+	SelectBrush(hdc, hGreenBrush);
+			
+	POINT ppt1[4];
+	loadFromFile("data1.dat", ppt1);
+	Rhombus rhomb1(ppt1);
+	rhomb1.drow(hdc);
+
+	//HBRUSH hBlueBrush = CreateSolidBrush(RGB(0, 0, 255));
+	HBRUSH hBlueCrossBrush = CreateHatchBrush(HS_DIAGCROSS, RGB(255, 255, 255));
+	SelectBrush(hdc, hBlueCrossBrush);
+	
+	POINT ppt2[4];
+	loadFromFile("data2.dat", ppt2);
+	Rhombus rhomb2;
+	rhomb2.setPoints(ppt2);
+	rhomb2.drow(hdc);
+
+	saveToFile("data1.dat", rhomb1.getPoints());
+	saveToFile("data2.dat", rhomb2.getPoints());
+
+	/*POINT ppt3[4] = {{10, rt.bottom/2},
+					{rt.right/2, 10},
+					{rt.right - 10, rt.bottom / 2},
+					{rt.right/2, rt.bottom - 10}};
+	
+	saveToFile("data1.dat", ppt3);*/
+	/*POINT ppt2[4];
+	loadFromFile("data.dat", ppt2);*/
+	/*for (size_t n = 0; n < 4; ++n) {
+		std::cout << ppt2[n].x << " " << ppt2[n].y << "\n";
+	};*/
+
+	/*Rhombus r1(ppt2);
+	r1.drow(hdc);*/
+	//			
+	//Rhombus r;
+	//POINT ppt2[4] = { { 50, rt.bottom / 2 },
+	//				{ rt.right / 2, 50 },
+	//				{ (rt.right - 50), rt.bottom / 2 },
+	//				{ rt.right / 2, rt.bottom - 50 } };
+	//	
+	//r.setPoints(ppt2);
+	//r.drow(hdc);
+	//saveToFile("data2.dat", r.getPoints());
+}
+
+void main() {
+
+	drow();
+	_getch();
+	//system("PAUSE");
+}
