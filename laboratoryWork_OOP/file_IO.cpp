@@ -1,5 +1,5 @@
 #include "file_IO.h"
-#include <iostream>
+
 
 void saveToFile(std::string file, POINT *pnt){
 	
@@ -12,13 +12,78 @@ void saveToFile(std::string file, POINT *pnt){
 	fout.close(); 	
 }
 
+void loadSteckFromFile(std::string file, Stack &stack)
+{
+	std::ifstream fin;
+	fin.open(file);
+
+	char buff[10];
+
+	POINT *pnt = new POINT[4];
+	int i = 0;
+	//for (size_t i = 0; i < 4; i+
+	while(fin.getline(buff, 50))
+	{
+				
+		//fin.getline(buff, 50);
+		char *sp = strstr(buff, " ");//ищем пробел
+		char num[25] = "\0";
+		int n = 0;
+		for (char *c = buff; c != sp; c++, n++)//выбираем цифры до пробела
+		{
+			num[n] = *c;
+		}
+		num[n] = '\0';
+
+		pnt[i].x = atol(num);//преобразуем в число
+
+		n = 0;
+		for (char *c = ++sp; *c != '\0'; c++, n++)//выбираем цифры от пробела до \0
+		{
+			num[n] = *c;
+		}
+		num[n] = '\0';
+
+		pnt[i].y = atol(num);//преобразуем в число
+
+		if (i == 3)//если набрали 4 точки, сбарсываем стек
+		{
+			stack.push(Rhombus(pnt));
+			pnt = new POINT[4];
+			i = 0;
+		}
+		else
+			i++;
+
+	}
+	fin.close();
+
+}
+
+void saveStackToFile(std::string fileName, Stack &stack)
+{
+	std::ofstream fout;
+	fout.open(fileName);
+	size_t stackSize = stack.size();
+	for (size_t i = 0; i < stackSize; i++)
+	{
+		Rhombus rmb(stack.pop());
+		POINT *pointPtr = rmb.getPoints();
+		
+		for (size_t n = 0; n < 4; ++n) {
+			fout << pointPtr[n].x << " " << pointPtr[n].y << "\n";
+		};
+	};
+	fout.close();
+}
+
 void loadFromFile(std::string file, POINT *pnt){
 	
 	std::ifstream fin;
 	fin.open(file);
 
 	char buff[10];	
-	//POINT p[4];
+	
 	for (size_t i = 0; i < 4; i++)
 	{
 		fin.getline(buff, 50);				
@@ -42,40 +107,5 @@ void loadFromFile(std::string file, POINT *pnt){
 
 		pnt[i].y = atol(num);
 	}	
-	fin.close();
-
-	//return p;
-
-	//FILE *input = NULL;
- //   input = fopen(file.data, "rb");
- //   if (input == NULL) {
- //       printf("Error opening file\n");
- //       return -1;
- //   }
- //   
-	//int id = 0;
- //   fread(&id, sizeof(int), 1, input);
- //   if(id != 42){	
-	//	printf("Data file is damaged\n");
-	//	return -1;
-	//}
- //   
-	//fread(tripsSize, sizeof(int), 1, input);//считываем размер данных в файле  
-	//
-	//if(*tripsSize == 0){//если размер данных в файле 0, вернем ошибку			
-	//	return -1;
-	//}	
-	//
-	//*tripsSize *= 2;//выделим в два раза больеш места под данные     	
- //   *trips = (trip*) malloc((*tripsSize)*sizeof(trip));
- //   
-	//for(int i = 0; i < *tripsSize; i++)//очистим выделеную область
- //   	(*trips)[i].num = 0;
- //   
-	//fread(*trips, sizeof(trip), *tripsSize, input);//считываем данные массива структур	
-	//
-	//for(int i = 0; i < *tripsSize; i++)//очистим выделеную область
- //   	int a = 0;
-	
-	//fclose(input);
+	fin.close();	
 }

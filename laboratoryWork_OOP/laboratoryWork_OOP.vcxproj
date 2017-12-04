@@ -114,11 +114,13 @@
     <ClCompile Include="file_IO.cpp" />
     <ClCompile Include="Rhombus.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Stack.cpp" />
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="file_IO.h" />
     <ClInclude Include="Rhombus.h" />
+    <ClInclude Include="Stack.h" />
     <ClInclude Include="window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

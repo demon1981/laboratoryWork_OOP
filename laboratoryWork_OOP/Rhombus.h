@@ -5,15 +5,17 @@
 
 class Rhombus
 {
-	//long *_data[];
 	POINT *_data;
 
 public:
 	Rhombus();
-	Rhombus(POINT[]);
+	Rhombus(POINT*);
+	Rhombus(Rhombus&);
 	~Rhombus();
+
 	void setPoints(POINT*);
-	void drow(HDC&);
+	void draw(const HDC&);
 	POINT* getPoints();
+	void incX();
 };
 

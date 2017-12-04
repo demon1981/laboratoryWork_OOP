@@ -18,7 +18,7 @@ window::~window()
 	ReleaseDC(hwnd, hdc);
 }
 
-HDC window::getHdc()
+HDC& window::getHdc()
 {
 	return hdc;
 }

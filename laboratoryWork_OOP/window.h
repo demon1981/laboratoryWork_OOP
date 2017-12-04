@@ -22,7 +22,7 @@ public:
 		static window w;
 		return w;
 	}
-	HDC getHdc();
+	HDC& getHdc();
 	HWND getHwnd();
 	RECT getRt();
 };
